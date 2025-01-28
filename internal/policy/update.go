@@ -1,6 +1,6 @@
 package policy
 
-func (p *Policy) UpdateQTable(stateKey string, action ActionType, reward float64, alpha, gamma float64) {
+func (p *Policy) UpdateQTable(stateKey string, action ActionType, reward float64, nextStateKey string, alpha, gamma float64) {
 	p.Mu.Lock()
 	defer p.Mu.Unlock()
 
@@ -11,7 +11,7 @@ func (p *Policy) UpdateQTable(stateKey string, action ActionType, reward float64
 	currentQ := p.QTable[stateKey][action]
 
 	maxNextQ := 0.0
-	if nextQValues, exists := p.QTable[stateKey]; exists {
+	if nextQValues, exists := p.QTable[nextStateKey]; exists {
 		for _, q := range nextQValues {
 			if q > maxNextQ {
 				maxNextQ = q
