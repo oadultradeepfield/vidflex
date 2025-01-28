@@ -4,7 +4,6 @@ import (
 	"log"
 	"math/rand"
 	"sync"
-	"time"
 
 	"github.com/oadultradeepfield/vidflex/internal/user"
 )
@@ -12,7 +11,7 @@ import (
 type Session struct {
 	User              *user.User
 	DipActive         bool
-	DipEndTime        time.Time
+	DipRemainingTicks int
 	Mu                sync.Mutex
 	OriginalBandwidth string
 }
@@ -40,18 +39,17 @@ func (s *Simulator) SimulateTick(userID string) {
 	session.Mu.Lock()
 	defer session.Mu.Unlock()
 
-	now := time.Now()
-
 	if session.DipActive {
-		if now.After(session.DipEndTime) {
+		session.DipRemainingTicks--
+		if session.DipRemainingTicks <= 0 {
 			session.DipActive = false
 			session.User.UpdateNetworkBandwidth(session.OriginalBandwidth)
 		}
 	}
 
-	if rand.Float64() < s.DipProbability {
+	if !session.DipActive && rand.Float64() < s.DipProbability {
 		session.DipActive = true
-		session.DipEndTime = now.Add(s.DipDuration)
+		session.DipRemainingTicks = s.DipDurationInTicks
 
 		newBandwidth := "0-1 Mbps"
 		switch session.User.NetworkBandwidth {
