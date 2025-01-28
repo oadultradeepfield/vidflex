@@ -26,3 +26,7 @@ go.work.sum
 
 # System files
 .DS_Store
+
+# Experiment files
+train
+*.csv

@@ -40,29 +40,35 @@ func main() {
 
 	start := time.Now()
 	for ep := 0; ep < *episodes; ep++ {
-		var wg sync.WaitGroup
-		results := make(chan float64, *usersPerEpisode)
-		errors := make(chan error, *usersPerEpisode)
+		var wgDynamic, wgStatic sync.WaitGroup
+		dynamicScoreResults := make(chan float64, *usersPerEpisode)
+		dynamicPenaltyResults := make(chan float64, *usersPerEpisode)
+		staticScoreResults := make(chan float64, *usersPerEpisode)
+		staticPenaltyResults := make(chan float64, *usersPerEpisode)
+		dynamicErrors := make(chan error, *usersPerEpisode)
+		staticErrors := make(chan error, *usersPerEpisode)
 
+		// Process dynamic policy users
 		for i := 0; i < *usersPerEpisode; i++ {
-			wg.Add(1)
+			wgDynamic.Add(1)
 			go func(userID string) {
-				defer wg.Done()
+				defer wgDynamic.Done()
 
 				u, action, nextStateKey, err := simulateUserSession(userID, p, s)
 				if err != nil {
-					errors <- fmt.Errorf("session failed for %s: %w", userID, err)
+					dynamicErrors <- fmt.Errorf("session failed for %s: %w", userID, err)
 					return
 				}
 
 				s.SimulateTick(userID)
-				reward := r.CalculateReward(u)
-				results <- reward
+				score, penalty := r.CalculateReward(u)
+				dynamicScoreResults <- score
+				dynamicPenaltyResults <- penalty
 
 				p.UpdateQTable(
 					u.GetStateKey(),
 					action,
-					reward,
+					score+penalty,
 					nextStateKey,
 					*alpha,
 					*gamma,
@@ -70,27 +76,78 @@ func main() {
 			}(fmt.Sprintf("user-%d-%d", ep, i))
 		}
 
-		wg.Wait()
-		close(results)
-		close(errors)
+		// Process static policy users
+		for i := 0; i < *usersPerEpisode; i++ {
+			wgStatic.Add(1)
+			go func(userID string) {
+				defer wgStatic.Done()
 
-		for err := range errors {
+				u, err := simulateStaticUserSession(userID, s)
+				if err != nil {
+					staticErrors <- fmt.Errorf("static session failed for %s: %w", userID, err)
+					return
+				}
+
+				s.SimulateTick(userID)
+				score, penalty := r.CalculateReward(u)
+				staticScoreResults <- score
+				staticPenaltyResults <- penalty
+			}(fmt.Sprintf("static-user-%d-%d", ep, i))
+		}
+
+		wgDynamic.Wait()
+		wgStatic.Wait()
+		close(dynamicScoreResults)
+		close(dynamicPenaltyResults)
+		close(staticScoreResults)
+		close(staticPenaltyResults)
+		close(dynamicErrors)
+		close(staticErrors)
+
+		for err := range dynamicErrors {
+			log.Println(err)
+		}
+		for err := range staticErrors {
 			log.Println(err)
 		}
 
-		avgReward := calculateAverage(results)
+		avgDynamicScore := calculateAverage(dynamicScoreResults)
+		avgDynamicPenalty := calculateAverage(dynamicPenaltyResults)
+		avgStaticScore := calculateAverage(staticScoreResults)
+		avgStaticPenalty := calculateAverage(staticPenaltyResults)
 
 		if ep > 0 && ep%p.DecayEvery == 0 {
 			p.Epsilon *= (1 - p.DecayRate)
 		}
 
 		if ep%100 == 0 {
-			fmt.Printf("Episode %d | Average Reward: %.4f | Epsilon: %.4f\n",
-				ep, avgReward, p.Epsilon)
+			fmt.Printf("Episode %d | Dynamic Reward: %.4f | Static Reward: %.4f | Dynamic Penalty: %.4f | Static Penalty: %.4f | Epsilon: %.4f\n",
+				ep, avgDynamicScore, avgStaticScore, avgDynamicPenalty, avgStaticPenalty, p.Epsilon)
+		}
+
+		if ep == *episodes-1 {
+			fmt.Printf("FINAL_METRICS|Episodes:%d|Users:%d|DynamicReward:%.4f|StaticReward:%.4f|DynamicPenalty:%.4f|StaticPenalty:%.4f|Epsilon:%.4f\n",
+				*episodes, *usersPerEpisode, avgDynamicScore, avgStaticScore, avgDynamicPenalty, avgStaticPenalty, p.Epsilon)
 		}
 	}
 
 	fmt.Printf("Training completed in %v\n", time.Since(start))
+}
+
+func simulateStaticUserSession(userID string, simulator *simulator.Simulator) (*user.User, error) {
+	bandwidths := []string{"0-1 Mbps", "1-3 Mbps", "3-5 Mbps", "5+ Mbps"}
+	deviceTypes := []string{"Mobile", "Tablet", "Desktop/TV"}
+
+	networkBandwidth := bandwidths[rand.Intn(len(bandwidths))]
+	deviceType := deviceTypes[rand.Intn(len(deviceTypes))]
+
+	u, err := user.NewUser(networkBandwidth, deviceType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create static user: %w", err)
+	}
+
+	simulator.AddSessionToSimulator(userID, u)
+	return u, nil
 }
 
 func simulateUserSession(userID string, p *policy.Policy, simulator *simulator.Simulator) (*user.User, policy.ActionType, string, error) {
