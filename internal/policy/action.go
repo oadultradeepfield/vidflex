@@ -17,10 +17,8 @@ const (
 )
 
 func (p *Policy) ChooseAction(stateKey string, validActions []ActionType) ActionType {
-	p.EpisodeCount++
-	if p.EpisodeCount%p.DecayEvery == 0 {
-		p.Epsilon *= (1 - p.DecayRate)
-	}
+	p.Mu.RLock()
+	defer p.Mu.RUnlock()
 
 	if rand.Float64() < p.Epsilon {
 		return validActions[rand.Intn(len(validActions))]

@@ -1,18 +1,22 @@
 package policy
 
+import (
+	"sync"
+)
+
 type Policy struct {
-	Epsilon      float64
-	QTable       map[string]map[ActionType]float64
-	DecayRate    float64
-	DecayEvery   int
-	EpisodeCount int
+	Epsilon    float64
+	QTable     map[string]map[ActionType]float64
+	DecayRate  float64
+	DecayEvery int
+	Mu         sync.RWMutex
 }
 
 func NewPolicy() *Policy {
 	return &Policy{
 		Epsilon:    0.8,
 		QTable:     make(map[string]map[ActionType]float64),
-		DecayRate:  0.05,
+		DecayRate:  0.01,
 		DecayEvery: 100,
 	}
 }
