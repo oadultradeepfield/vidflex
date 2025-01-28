@@ -1,6 +1,7 @@
 package simulator
 
 import (
+	"log"
 	"math/rand"
 	"sync"
 	"time"
@@ -26,13 +27,14 @@ func (s *Simulator) AddSessionToSimulator(userID string, user *user.User) {
 	}
 }
 
-func (s *Simulator) SimulateTick(userID string) float64 {
+func (s *Simulator) SimulateTick(userID string) {
 	s.Mu.RLock()
 	session, exists := s.Sessions[userID]
 	s.Mu.RUnlock()
 
 	if !exists {
-		return 0.0
+		log.Printf("Error: Session for userID '%s' does not exist\n", userID)
+		return
 	}
 
 	session.Mu.Lock()
@@ -45,7 +47,6 @@ func (s *Simulator) SimulateTick(userID string) float64 {
 			session.DipActive = false
 			session.User.UpdateNetworkBandwidth(session.OriginalBandwidth)
 		}
-		return 2.0
 	}
 
 	if rand.Float64() < s.DipProbability {
@@ -63,8 +64,5 @@ func (s *Simulator) SimulateTick(userID string) float64 {
 		}
 
 		session.User.UpdateNetworkBandwidth(newBandwidth)
-		return 2.0
 	}
-
-	return 0.0
 }
