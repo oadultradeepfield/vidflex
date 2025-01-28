@@ -9,7 +9,7 @@ import (
 type User struct {
 	NetworkBandwidth string
 	MaxResolution    string
-	CurrentVideo     video.Video
+	CurrentVideo     *video.Video
 }
 
 var ValidNetworkBandwidths = map[string]bool{
@@ -43,6 +43,6 @@ func NewUser(networkBandwidth, deviceType string) (*User, error) {
 	return &User{
 		NetworkBandwidth: networkBandwidth,
 		MaxResolution:    maxResolution,
-		CurrentVideo:     *defaultVideo,
+		CurrentVideo:     defaultVideo,
 	}, nil
 }
