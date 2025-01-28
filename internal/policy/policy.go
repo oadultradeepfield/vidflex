@@ -8,9 +8,9 @@ type Policy struct {
 	EpisodeCount int
 }
 
-func NewPolicy(initialEpsilon float64) *Policy {
+func NewPolicy() *Policy {
 	return &Policy{
-		Epsilon:    initialEpsilon,
+		Epsilon:    0.8,
 		QTable:     make(map[string]map[ActionType]float64),
 		DecayRate:  0.05,
 		DecayEvery: 100,
