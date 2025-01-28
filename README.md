@@ -4,6 +4,18 @@
 
 A Q-Learning-based adaptive video streaming optimizer, entirely written in Go, designed to maximize user satisfaction while minimizing bandwidth costs. The current implementation operates on synthetic data with simplified states and utilizes Q-Learning with an epsilon-greedy policy.
 
+## Features
+
+- [x] Simulate concurrent users watching the same video stream with randomized network bandwidth ranges (0–1 Mbps, 1–3 Mbps, 3–5 Mbps, 5+ Mbps) and device types (mobile, tablet, desktop/TV).
+- [x] Adjust video quality by modifying one metric at a time (resolution, bitrate, frame rate) through discrete actions.
+- [x] Update the policy using a reward function that combines engagement score (prioritizing higher quality), bandwidth cost penalties, and a collaborative adjustment based on the average satisfaction of other concurrent users in similar states.  
+       Formula:  
+       $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[\text{reward} + \gamma \max_{a'} Q(s', a') + 0.2 \times \text{average satisfaction}\right]$$
+
+- [x] Implement an epsilon-greedy policy with an initial epsilon = 0.8 and epsilon decay of 5% per 100 episodes.
+- [x] **System assumptions**: Concurrent users are managed by a single agent via `goroutines`; simulated bandwidth dips reduce the bandwidth tier by one level with 10% probability.
+- [x] Train the agent and benchmark performance against a static policy (fixed 720p, 1 Mbps, 30 fps) via command line (see the below section for more details).
+
 ## Benchmark Results
 
 **Device**: 15-inch MacBook Air with M3 Chip (8-Core CPU, 10-Core GPU, and 16GB Unified Memory)
@@ -19,18 +31,6 @@ A Q-Learning-based adaptive video streaming optimizer, entirely written in Go, d
 | 2000     | 500   | 4.46     | 0.3428         | 0.3420        | 0.4614          | 0.4430         |
 | 2000     | 1000  | 9.27     | 0.3428         | 0.3420        | 0.4405          | 0.4406         |
 | 2000     | 2000  | 19.68    | 0.3432         | 0.3420        | 0.4333          | 0.4403         |
-
-## Features
-
-- [x] Simulate concurrent users watching the same video stream with randomized network bandwidth ranges (0–1 Mbps, 1–3 Mbps, 3–5 Mbps, 5+ Mbps) and device types (mobile, tablet, desktop/TV).
-- [x] Adjust video quality by modifying one metric at a time (resolution, bitrate, frame rate) through discrete actions.
-- [x] Update the policy using a reward function that combines engagement score (prioritizing higher quality), bandwidth cost penalties, and a collaborative adjustment based on the average satisfaction of other concurrent users in similar states.  
-       Formula:  
-       $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[\text{reward} + \gamma \max_{a'} Q(s', a') + 0.2 \times \text{average satisfaction}\right]$$
-
-- [x] Implement an epsilon-greedy policy with an initial epsilon = 0.8 and epsilon decay of 5% per 100 episodes.
-- [x] **System assumptions**: Concurrent users are managed by a single agent via `goroutines`; simulated bandwidth dips reduce the bandwidth tier by one level with 10% probability.
-- [x] Train the agent and benchmark performance against a static policy (fixed 720p, 1 Mbps, 30 fps) via command line (see the below section for more details).
 
 ## Getting Started
 
@@ -54,16 +54,14 @@ A Q-Learning-based adaptive video streaming optimizer, entirely written in Go, d
    -decay-rate 0.05
    ```
 
-3. To generate benchmark results, use the precreated script files:
+3. To generate benchmark results, use the preconfigured script files:
 
    ```bash
    chmod +x benchmark.sh
    ./benchmark.sh
    ```
 
-   Check the results.csv file in the root directory for the benchmark results.
-
-_Note: The static policy (fixed 720p/1 Mbps/30 fps) is automatically included in the benchmark for comparison._
+   The benchmark results will be saved in the `results.csv` file located in the root directory.
 
 ## Future Roadmap
 
