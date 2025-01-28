@@ -16,7 +16,7 @@ To be updated.
 - [x] Adjust video quality by modifying one metric at a time (resolution, bitrate, frame rate) through discrete actions.
 - [x] Update the policy using a reward function that combines engagement score (prioritizing higher quality), bandwidth cost penalties, and a collaborative adjustment based on the average satisfaction of other concurrent users in similar states.  
        Formula:  
-       $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[\text{reward} + \gamma \max_{a'} Q(s', a') + 0.2 \times \text{avg\_satisfaction}\right]$$
+       $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[\text{reward} + \gamma \max_{a'} Q(s', a') + 0.2 \times \text{average satisfaction}\right]$$
 
 - [x] Implement an epsilon-greedy policy with an initial ε = 0.8 and ε decay of 5% per 100 episodes.
 - [x] **System assumptions**: Concurrent users are managed by a single agent via `goroutines`; simulated bandwidth dips reduce the bandwidth tier by one level with 10% probability.
@@ -51,8 +51,6 @@ _Note: The static policy (fixed 720p/1 Mbps/30 fps) is automatically included in
 - [ ] Implement advanced algorithms like Deep Q-Networks (DQN) to stabilize learning as user numbers scale, using techniques like experience replay and target networks.
 - [ ] Integrate alternative exploration strategies (e.g., Upper Confidence Bound [UCB], Thompson Sampling) to improve state-action space exploration beyond epsilon-greedy.
 - [ ] Expand state definitions with real-world network parameters (e.g., latency, jitter, packet loss) and device-specific capabilities (e.g., codec support, screen resolution).
-
-_Minimal changes: Added technical specifics (e.g., experience replay, target networks) and concrete examples (latency, jitter) for clarity._
 
 ## License
 
