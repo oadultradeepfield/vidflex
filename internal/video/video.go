@@ -14,6 +14,8 @@ var ValidResolutions = map[string]bool{
 	"4K":    true,
 }
 
+var ResolutionOrder = []string{"720p", "1080p", "4K"}
+
 var ValidBitrates = map[string]bool{
 	"500 Kbps": true,
 	"1 Mbps":   true,
@@ -21,11 +23,15 @@ var ValidBitrates = map[string]bool{
 	"5 Mbps":   true,
 }
 
+var BitrateOrder = []string{"500 Kbps", "1 Mbps", "2.5 Mbps", "5 Mbps"}
+
 var ValidFrameRates = map[string]bool{
 	"24 fps": true,
 	"30 fps": true,
 	"60 fps": true,
 }
+
+var FrameRateOrder = []string{"24 fps", "30 fps", "60 fps"}
 
 func NewVideo(resolution, bitrate, frameRate string) (*Video, error) {
 	if !ValidResolutions[resolution] {
