@@ -8,11 +8,11 @@ const (
 	frameRateWeight  = 0.3
 )
 
-func (r *Reward) CalculateReward(u *user.User) float64 {
+func (r *Reward) CalculateReward(u *user.User) (float64, float64) {
 	engagement := r.calculateEngagement(u)
 	costPenalty := r.CostPenaltyMap[u.NetworkBandwidth]
 	collaborativeFilteringBonus := 0.2 * r.CollaborativeScores[u.GetStateKey()]
-	return engagement - costPenalty + collaborativeFilteringBonus
+	return engagement + collaborativeFilteringBonus, costPenalty
 }
 
 func (r *Reward) calculateEngagement(u *user.User) float64 {
