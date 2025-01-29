@@ -60,15 +60,15 @@ func main() {
 					return
 				}
 
-				s.SimulateTick(userID)
-				score, penalty := r.CalculateReward(u)
+				netWorkDipStatus := s.SimulateTick(userID)
+				score, penalty := r.CalculateReward(u, netWorkDipStatus)
 				dynamicScoreResults <- score
 				dynamicPenaltyResults <- penalty
 
 				p.UpdateQTable(
 					u.GetStateKey(),
 					action,
-					score+penalty,
+					score-penalty,
 					nextStateKey,
 					*alpha,
 					*gamma,
@@ -88,8 +88,9 @@ func main() {
 					return
 				}
 
-				s.SimulateTick(userID)
-				score, penalty := r.CalculateReward(u)
+				netWorkDipStatus := s.SimulateTick(userID)
+				score, penalty := r.CalculateReward(u, netWorkDipStatus)
+
 				staticScoreResults <- score
 				staticPenaltyResults <- penalty
 			}(fmt.Sprintf("static-user-%d-%d", ep, i))
