@@ -1,8 +1,8 @@
 # VidFlex
 
-![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
-
 A Q-Learning-based adaptive video streaming optimizer, entirely written in Go, designed to maximize user satisfaction while minimizing bandwidth costs. The current implementation operates on synthetic data with simplified states and utilizes Q-Learning with an epsilon-greedy policy.
+
+![VidFlex Banner](/img/vidflex.png)
 
 ## Features
 
@@ -20,17 +20,45 @@ A Q-Learning-based adaptive video streaming optimizer, entirely written in Go, d
 
 **Device**: 15-inch MacBook Air with M3 Chip (8-Core CPU, 10-Core GPU, and 16GB Unified Memory)
 
-| Episodes | Users | Time (s) | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
-| -------- | ----- | -------- | -------------- | ------------- | --------------- | -------------- |
-| 500      | 500   | 1.09     | 0.3447         | 0.3420        | 0.4348          | 0.4284         |
-| 500      | 1000  | 2.19     | 0.3457         | 0.3420        | 0.4363          | 0.4283         |
-| 500      | 2000  | 4.75     | 0.3459         | 0.3420        | 0.4403          | 0.4488         |
-| 1000     | 500   | 2.17     | 0.3438         | 0.3420        | 0.4432          | 0.4562         |
-| 1000     | 1000  | 4.59     | 0.3441         | 0.3420        | 0.4357          | 0.4357         |
-| 1000     | 2000  | 9.57     | 0.3445         | 0.3420        | 0.4375          | 0.4404         |
-| 2000     | 500   | 4.46     | 0.3428         | 0.3420        | 0.4614          | 0.4430         |
-| 2000     | 1000  | 9.27     | 0.3428         | 0.3420        | 0.4405          | 0.4406         |
-| 2000     | 2000  | 19.68    | 0.3432         | 0.3420        | 0.4333          | 0.4403         |
+### Users: 1
+
+| Episodes | Time    | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
+| -------- | ------- | -------------- | ------------- | --------------- | -------------- |
+| 500      | 9.50ms  | 0.3420         | 0.3420        | 0.8000          | 0.1000         |
+| 1000     | 5.83ms  | 0.3420         | 0.3420        | 0.5000          | 0.5000         |
+| 2000     | 12.78ms | 0.3420         | 0.3420        | 0.5000          | 0.8000         |
+
+### Users: 100
+
+| Episodes | Time     | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
+| -------- | -------- | -------------- | ------------- | --------------- | -------------- |
+| 500      | 189.42ms | 0.3455         | 0.3420        | 0.4180          | 0.4250         |
+| 1000     | 380.16ms | 0.3435         | 0.3420        | 0.4700          | 0.4000         |
+| 2000     | 766.55ms | 0.3438         | 0.3420        | 0.4300          | 0.4250         |
+
+### Users: 500
+
+| Episodes | Time  | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
+| -------- | ----- | -------------- | ------------- | --------------- | -------------- |
+| 500      | 1.04s | 0.3455         | 0.3420        | 0.4544          | 0.4610         |
+| 1000     | 2.17s | 0.3430         | 0.3420        | 0.4550          | 0.4444         |
+| 2000     | 4.43s | 0.3420         | 0.3420        | 0.4210          | 0.4444         |
+
+### Users: 1000
+
+| Episodes | Time  | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
+| -------- | ----- | -------------- | ------------- | --------------- | -------------- |
+| 500      | 2.13s | 0.3452         | 0.3420        | 0.4372          | 0.4605         |
+| 1000     | 4.57s | 0.3444         | 0.3420        | 0.4438          | 0.4447         |
+| 2000     | 9.25s | 0.3425         | 0.3420        | 0.4399          | 0.4337         |
+
+### Users: 2000
+
+| Episodes | Time   | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
+| -------- | ------ | -------------- | ------------- | --------------- | -------------- |
+| 500      | 4.56s  | 0.3454         | 0.3420        | 0.4410          | 0.4418         |
+| 1000     | 9.59s  | 0.3439         | 0.3420        | 0.4333          | 0.4488         |
+| 2000     | 19.46s | 0.3426         | 0.3420        | 0.4411          | 0.4494         |
 
 ## Getting Started
 
