@@ -1,6 +1,8 @@
 package reward
 
-import "github.com/oadultradeepfield/vidflex/internal/user"
+import (
+	"github.com/oadultradeepfield/vidflex/internal/user"
+)
 
 const (
 	resolutionWeight = 0.4
@@ -8,9 +10,13 @@ const (
 	frameRateWeight  = 0.3
 )
 
-func (r *Reward) CalculateReward(u *user.User) (float64, float64) {
+func (r *Reward) CalculateReward(u *user.User, dipStatus bool) (float64, float64) {
 	engagement := r.calculateEngagement(u)
-	costPenalty := r.CostPenaltyMap[u.NetworkBandwidth]
+	if dipStatus {
+		engagement *= 0.7
+	}
+
+	costPenalty := 0.15 * r.CostPenaltyMap[u.CurrentVideo.Bitrate]
 	collaborativeFilteringBonus := 0.2 * r.CollaborativeScores[u.GetStateKey()]
 	return engagement + collaborativeFilteringBonus, costPenalty
 }
