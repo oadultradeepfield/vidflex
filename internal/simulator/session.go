@@ -9,17 +9,15 @@ import (
 )
 
 type Session struct {
-	User              *user.User
-	Mu                sync.Mutex
-	OriginalBandwidth string
+	User *user.User
+	Mu   sync.Mutex
 }
 
 func (s *Simulator) AddSessionToSimulator(userID string, user *user.User) {
 	s.Mu.Lock()
 	defer s.Mu.Unlock()
 	s.Sessions[userID] = &Session{
-		User:              user,
-		OriginalBandwidth: user.NetworkBandwidth,
+		User: user,
 	}
 }
 
