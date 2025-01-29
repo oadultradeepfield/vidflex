@@ -10,7 +10,6 @@ import (
 
 type Session struct {
 	User              *user.User
-	DipActive         bool
 	DipRemainingTicks int
 	Mu                sync.Mutex
 	OriginalBandwidth string
@@ -21,34 +20,33 @@ func (s *Simulator) AddSessionToSimulator(userID string, user *user.User) {
 	defer s.Mu.Unlock()
 	s.Sessions[userID] = &Session{
 		User:              user,
-		DipActive:         false,
 		OriginalBandwidth: user.NetworkBandwidth,
 	}
 }
 
-func (s *Simulator) SimulateTick(userID string) {
+func (s *Simulator) SimulateTick(userID string) bool {
 	s.Mu.RLock()
 	session, exists := s.Sessions[userID]
 	s.Mu.RUnlock()
 
 	if !exists {
 		log.Printf("Error: Session for userID '%s' does not exist\n", userID)
-		return
+		return false
 	}
 
 	session.Mu.Lock()
 	defer session.Mu.Unlock()
 
-	if session.DipActive {
+	if session.User.NetworkDipStatus {
 		session.DipRemainingTicks--
 		if session.DipRemainingTicks <= 0 {
-			session.DipActive = false
+			session.User.ToggleNetworkDipstatus()
 			session.User.UpdateNetworkBandwidth(session.OriginalBandwidth)
 		}
 	}
 
-	if !session.DipActive && rand.Float64() < s.DipProbability {
-		session.DipActive = true
+	if !session.User.NetworkDipStatus && rand.Float64() < s.DipProbability {
+		session.User.ToggleNetworkDipstatus()
 		session.DipRemainingTicks = s.DipDurationInTicks
 
 		newBandwidth := "0-1 Mbps"
@@ -63,4 +61,6 @@ func (s *Simulator) SimulateTick(userID string) {
 
 		session.User.UpdateNetworkBandwidth(newBandwidth)
 	}
+
+	return session.User.NetworkDipStatus
 }

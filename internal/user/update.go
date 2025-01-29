@@ -12,6 +12,10 @@ func (u *User) UpdateNetworkBandwidth(newBandwidth string) error {
 	return nil
 }
 
+func (u *User) ToggleNetworkDipstatus() {
+	u.NetworkDipStatus = !u.NetworkDipStatus
+}
+
 func (u *User) UpdateMaxResolution(newDeviceType string) error {
 	maxResolution, ok := ValidDeviceTypes[newDeviceType]
 	if !ok {

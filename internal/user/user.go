@@ -8,6 +8,7 @@ import (
 
 type User struct {
 	NetworkBandwidth string
+	NetworkDipStatus bool
 	MaxResolution    string
 	CurrentVideo     *video.Video
 }
@@ -42,6 +43,7 @@ func NewUser(networkBandwidth, deviceType string) (*User, error) {
 
 	return &User{
 		NetworkBandwidth: networkBandwidth,
+		NetworkDipStatus: false,
 		MaxResolution:    maxResolution,
 		CurrentVideo:     defaultVideo,
 	}, nil
