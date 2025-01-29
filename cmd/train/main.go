@@ -60,8 +60,7 @@ func main() {
 					return
 				}
 
-				netWorkDipStatus := s.SimulateTick(userID)
-				score, penalty := r.CalculateReward(u, netWorkDipStatus)
+				score, penalty := r.CalculateReward(u)
 				dynamicScoreResults <- score
 				dynamicPenaltyResults <- penalty
 
@@ -88,8 +87,7 @@ func main() {
 					return
 				}
 
-				netWorkDipStatus := s.SimulateTick(userID)
-				score, penalty := r.CalculateReward(u, netWorkDipStatus)
+				score, penalty := r.CalculateReward(u)
 
 				staticScoreResults <- score
 				staticPenaltyResults <- penalty
@@ -148,6 +146,7 @@ func simulateStaticUserSession(userID string, simulator *simulator.Simulator) (*
 	}
 
 	simulator.AddSessionToSimulator(userID, u)
+	simulator.SimulateTick(userID)
 	return u, nil
 }
 
@@ -164,6 +163,7 @@ func simulateUserSession(userID string, p *policy.Policy, simulator *simulator.S
 	}
 
 	simulator.AddSessionToSimulator(userID, u)
+	simulator.SimulateTick(userID)
 
 	stateKey := u.GetStateKey()
 	validActions := []policy.ActionType{

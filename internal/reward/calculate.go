@@ -10,9 +10,9 @@ const (
 	frameRateWeight  = 0.3
 )
 
-func (r *Reward) CalculateReward(u *user.User, dipStatus bool) (float64, float64) {
+func (r *Reward) CalculateReward(u *user.User) (float64, float64) {
 	engagement := r.calculateEngagement(u)
-	if dipStatus {
+	if u.NetworkDipStatus {
 		engagement *= 0.7
 	}
 
