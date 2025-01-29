@@ -10,7 +10,6 @@ import (
 
 type Session struct {
 	User              *user.User
-	DipRemainingTicks int
 	Mu                sync.Mutex
 	OriginalBandwidth string
 }
@@ -38,28 +37,26 @@ func (s *Simulator) SimulateTick(userID string) bool {
 	defer session.Mu.Unlock()
 
 	if session.User.NetworkDipStatus {
-		session.DipRemainingTicks--
-		if session.DipRemainingTicks <= 0 {
+		if rand.Float64() < s.DipProbability {
 			session.User.ToggleNetworkDipstatus()
 			session.User.UpdateNetworkBandwidth(session.OriginalBandwidth)
 		}
-	}
+	} else {
+		if rand.Float64() < s.DipProbability {
+			session.User.ToggleNetworkDipstatus()
 
-	if !session.User.NetworkDipStatus && rand.Float64() < s.DipProbability {
-		session.User.ToggleNetworkDipstatus()
-		session.DipRemainingTicks = s.DipDurationInTicks
+			newBandwidth := "0-1 Mbps"
+			switch session.User.NetworkBandwidth {
+			case "5+ Mbps":
+				newBandwidth = "3-5 Mbps"
+			case "3-5 Mbps":
+				newBandwidth = "1-3 Mbps"
+			case "1-3 Mbps":
+				newBandwidth = "0-1 Mbps"
+			}
 
-		newBandwidth := "0-1 Mbps"
-		switch session.User.NetworkBandwidth {
-		case "5+ Mbps":
-			newBandwidth = "3-5 Mbps"
-		case "3-5 Mbps":
-			newBandwidth = "1-3 Mbps"
-		case "1-3 Mbps":
-			newBandwidth = "0-1 Mbps"
+			session.User.UpdateNetworkBandwidth(newBandwidth)
 		}
-
-		session.User.UpdateNetworkBandwidth(newBandwidth)
 	}
 
 	return session.User.NetworkDipStatus

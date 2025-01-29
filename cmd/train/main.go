@@ -68,7 +68,7 @@ func main() {
 				p.UpdateQTable(
 					u.GetStateKey(),
 					action,
-					score-penalty,
+					score-0.15*penalty,
 					nextStateKey,
 					*alpha,
 					*gamma,
