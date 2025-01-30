@@ -18,47 +18,9 @@ A Q-Learning-based adaptive video streaming optimizer, entirely written in Go, d
 
 ## Benchmark Results
 
-**Device**: 15-inch MacBook Air with M3 Chip (8-Core CPU, 10-Core GPU, and 16GB Unified Memory)
+The performance of the RL model after 10,000 episodes of training on a 15-inch MacBook Air with an M3 Chip (8-Core CPU, 10-Core GPU, and 16GB Unified Memory) is shown below.
 
-### Users: 1
-
-| Episodes | Time   | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
-| -------- | ------ | -------------- | ------------- | --------------- | -------------- |
-| 500      | 6.81ms | 0.4920         | 0.3420        | 0.5000          | 0.5000         |
-| 1000     | 4.85ms | 0.4320         | 0.3420        | 0.3000          | 0.5000         |
-| 2000     | 9.79ms | 0.4320         | 0.2394        | 0.3000          | 0.5000         |
-
-### Users: 100
-
-| Episodes | Time     | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
-| -------- | -------- | -------------- | ------------- | --------------- | -------------- |
-| 500      | 109.41ms | 0.4202         | 0.3276        | 0.3090          | 0.5000         |
-| 1000     | 218.07ms | 0.4216         | 0.3256        | 0.3000          | 0.5000         |
-| 2000     | 445.60ms | 0.4190         | 0.3297        | 0.3000          | 0.5000         |
-
-### Users: 500
-
-| Episodes | Time     | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
-| -------- | -------- | -------------- | ------------- | --------------- | -------------- |
-| 500      | 667.71ms | 0.4148         | 0.3315        | 0.3162          | 0.5000         |
-| 1000     | 1.40s    | 0.4177         | 0.3322        | 0.3100          | 0.5000         |
-| 2000     | 2.87s    | 0.4177         | 0.3340        | 0.3040          | 0.5000         |
-
-### Users: 1000
-
-| Episodes | Time  | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
-| -------- | ----- | -------------- | ------------- | --------------- | -------------- |
-| 500      | 1.47s | 0.4148         | 0.3325        | 0.3156          | 0.5000         |
-| 1000     | 3.07s | 0.4171         | 0.3304        | 0.3081          | 0.5000         |
-| 2000     | 6.29s | 0.4180         | 0.3325        | 0.3033          | 0.5000         |
-
-### Users: 2000
-
-| Episodes | Time   | Dynamic Reward | Static Reward | Dynamic Penalty | Static Penalty |
-| -------- | ------ | -------------- | ------------- | --------------- | -------------- |
-| 500      | 3.27s  | 0.4166         | 0.3308        | 0.3139          | 0.5000         |
-| 1000     | 7.09s  | 0.4170         | 0.3320        | 0.3088          | 0.5000         |
-| 2000     | 13.91s | 0.4179         | 0.3324        | 0.3019          | 0.5000         |
+![Performance Benchmark](/img/benchmark.png)
 
 ## Getting Started
 

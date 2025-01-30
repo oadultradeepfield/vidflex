@@ -30,3 +30,4 @@ go.work.sum
 # Experiment files
 train
 *.csv
+*.py

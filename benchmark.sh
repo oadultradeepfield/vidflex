@@ -10,7 +10,7 @@ go build -o train
 echo "Episodes,Users,Time,DynamicReward,StaticReward,DynamicPenalty,StaticPenalty" > ../../results.csv
 
 # Run benchmarks with different configurations
-for episodes in 500 1000 2000; do
+for episodes in 500 1000 2000 5000 10000; do
     for users in 1 100 500 1000 2000; do
         echo "Running benchmark with $episodes episodes and $users users..."
         
